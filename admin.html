@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body {
+            background-color: #f4f6f9;
+        }
+
+        .sidebar {
+            width: 250px;
+            height: 100vh;
+            background-color: #343a40;
+            position: fixed;
+            left: 0;
+            top: 0;
+            padding: 20px;
+            color: white;
+        }
+
+        .logo {
+            font-size: 24px;
+            padding: 20px 0;
+            text-align: center;
+            border-bottom: 1px solid #4f5962;
+            margin-bottom: 20px;
+        }
+
+        .nav-item {
+            padding: 15px;
+            cursor: pointer;
+            transition: background 0.3s;
+            margin-bottom: 5px;
+            border-radius: 5px;
+        }
+
+        .nav-item:hover {
+            background-color: #4f5962;
+        }
+
+        .nav-item.active {
+            background-color: #007bff;
+        }
+
+        .main-content {
+            margin-left: 250px;
+            padding: 20px;
+        }
+
+        .header {
+            background-color: white;
+            padding: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .section {
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        .query-item, .report-item, .book-request {
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            transition: opacity 0.3s, transform 0.3s;
+        }
+
+        .fade-out {
+            opacity: 0;
+            transform: translateX(20px);
+        }
+
+        .btn {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .btn-danger {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .btn-success {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .status {
+            padding: 5px 10px;
+            border-radius: 3px;
+            font-size: 12px;
+            margin-left: 10px;
+        }
+
+        .status-pending {
+            background-color: #ffc107;
+            color: black;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+
+        .modal-content {
+            background-color: white;
+            width: 500px;
+            margin: 100px auto;
+            padding: 20px;
+            border-radius: 5px;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .empty-message {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+            font-style: italic;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="logo">Admin Dashboard</div>
+        <div class="nav-item active" data-section="queries">User Queries</div>
+        <div class="nav-item" data-section="reports">Reported Comments</div>
+        <div class="nav-item" data-section="books">Book Requests</div>
+    </div>
+
+    <div class="main-content">
+        <div class="header">
+            <h2>Welcome, Admin</h2>
+        </div>
+
+        <!-- User Queries Section -->
+        <div class="section active" id="queries">
+            <h3>Pending User Queries</h3>
+            <div id="queries-list">
+                <!-- Sample Queries -->
+                <div class="query-item" data-id="query1">
+                    <h4>Query from User123 <span class="status status-pending">Pending</span></h4>
+                    <p>How do I add a new book review to my profile?</p>
+                    <button class="btn btn-primary" onclick="showReplyModal('User123', 'query1')">Reply</button>
+                </div>
+                <div class="query-item" data-id="query2">
+                    <h4>Query from User456 <span class="status status-pending">Pending</span></h4>
+                    <p>I can't find the book I want to review.</p>
+                    <button class="btn btn-primary" onclick="showReplyModal('User456', 'query2')">Reply</button>
+                </div>
+            </div>
+            <div class="empty-message" id="queries-empty">No pending queries</div>
+        </div>
+
+        <!-- Reported Comments Section -->
+        <div class="section" id="reports">
+            <h3>Reported Comments</h3>
+            <div id="reports-list">
+                <!-- Sample Reports -->
+                <div class="report-item" data-id="report1">
+                    <h4>Reported Comment by User456</h4>
+                    <p>This is an inappropriate comment that was reported.</p>
+                    <button class="btn btn-danger" onclick="deleteComment('report1')">Delete Comment</button>
+                    <button class="btn btn-primary" onclick="ignoreReport('report1')">Ignore Report</button>
+                </div>
+                <div class="report-item" data-id="report2">
+                    <h4>Reported Comment by User789</h4>
+                    <p>Another reported comment example.</p>
+                    <button class="btn btn-danger" onclick="deleteComment('report2')">Delete Comment</button>
+                    <button class="btn btn-primary" onclick="ignoreReport('report2')">Ignore Report</button>
+                </div>
+            </div>
+            <div class="empty-message" id="reports-empty">No reported comments</div>
+        </div>
+
+        <!-- Book Requests Section -->
+        <div class="section" id="books">
+            <h3>New Book Requests</h3>
+            <div id="books-list">
+                <!-- Sample Book Requests -->
+                <div class="book-request" data-id="book1">
+                    <h4>New Book Request</h4>
+                    <p><strong>Title:</strong> The Great Novel</p>
+                    <p><strong>Author:</strong> John Doe</p>
+                    <p><strong>Requested by:</strong> User789</p>
+                    <button class="btn btn-success" onclick="approveBook('book1')">Approve</button>
+                    <button class="btn btn-danger" onclick="rejectBook('book1')">Reject</button>
+                </div>
+                <div class="book-request" data-id="book2">
+                    <h4>New Book Request</h4>
+                    <p><strong>Title:</strong> Another Amazing Book</p>
+                    <p><strong>Author:</strong> Jane Smith</p>
+                    <p><strong>Requested by:</strong> User101</p>
+                    <button class="btn btn-success" onclick="approveBook('book2')">Approve</button>
+                    <button class="btn btn-danger" onclick="rejectBook('book2')">Reject</button>
+                </div>
+            </div>
+            <div class="empty-message" id="books-empty">No pending book requests</div>
+        </div>
+    </div>
+
+    <!-- Reply Modal -->
+    <div class="modal" id="replyModal">
+        <div class="modal-content">
+            <h3>Reply to Query</h3>
+            <textarea id="replyText" rows="5" placeholder="Type your reply here..."></textarea>
+            <button class="btn btn-primary" onclick="sendReply()">Send Reply</button>
+            <button class="btn btn-danger" onclick="closeModal()">Cancel</button>
+        </div>
+    </div>
+
+    <script>
+        // Navigation
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', () => {
+                document.querySelector('.nav-item.active').classList.remove('active');
+                item.classList.add('active');
+                
+                const sectionId = item.getAttribute('data-section');
+                document.querySelector('.section.active').classList.remove('active');
+                document.getElementById(sectionId).classList.add('active');
+            });
+        });
+
+        // Modal Functions
+        let currentUser = '';
+        let currentItemId = '';
+
+        function showReplyModal(username, itemId) {
+            currentUser = username;
+            currentItemId = itemId;
+            document.getElementById('replyModal').style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('replyModal').style.display = 'none';
+            document.getElementById('replyText').value = '';
+        }
+
+        function removeItem(itemId, listId, emptyMessageId) {
+            const item = document.querySelector(`[data-id="${itemId}"]`);
+            if (item) {
+                item.classList.add('fade-out');
+                setTimeout(() => {
+                    item.remove();
+                    checkEmpty(listId, emptyMessageId);
+                }, 300);
+            }
+        }
+
+        function checkEmpty(listId, emptyMessageId) {
+            const list = document.getElementById(listId);
+            const emptyMessage = document.getElementById(emptyMessageId);
+            if (list.children.length === 0) {
+                emptyMessage.style.display = 'block';
+            } else {
+                emptyMessage.style.display = 'none';
+            }
+        }
+
+        function sendReply() {
+            const reply = document.getElementById('replyText').value;
+            if (reply.trim() === '') {
+                alert('Please enter a reply');
+                return;
+            }
+            
+            // Here you would typically send the reply to your backend
+            console.log(`Sending reply to ${currentUser}: ${reply}`);
+            
+            removeItem(currentItemId, 'queries-list', 'queries-empty');
+            closeModal();
+        }
+
+        function deleteComment(reportId) {
+            if (confirm('Are you sure you want to delete this comment?')) {
+                // Here you would typically send a delete request to your backend
+                console.log(`Deleting comment: ${reportId}`);
+                removeItem(reportId, 'reports-list', 'reports-empty');
+            }
+        }
+
+        function ignoreReport(reportId) {
+            if (confirm('Are you sure you want to ignore this report?')) {
+                // Here you would typically send an ignore request to your backend
+                console.log(`Ignoring report: ${reportId}`);
+                removeItem(reportId, 'reports-list', 'reports-empty');
+            }
+        }
+
+        function approveBook(bookId) {
+            if (confirm('Are you sure you want to approve this book?')) {
+                // Here you would typically send an approve request to your backend
+                console.log(`Approving book: ${bookId}`);
+                removeItem(bookId, 'books-list', 'books-empty');
+            }
+        }
+
+        function rejectBook(bookId) {
+            if (confirm('Are you sure you want to reject this book?')) {
+                // Here you would typically send a reject request to your backend
+                console.log(`Rejecting book: ${bookId}`);
+                removeItem(bookId, 'books-list', 'books-empty');
+            }
+        }
+
+        // Initialize empty state checks
+        window.onload = function() {
+            checkEmpty('queries-list', 'queries-empty');
+            checkEmpty('reports-list', 'reports-empty');
+            checkEmpty('books-list', 'books-empty');
+        };
+    </script>
+</body>
+</html>
