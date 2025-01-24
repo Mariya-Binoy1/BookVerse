@@ -665,7 +665,7 @@
 
                 <button class="login-btn">
                     <i class="fas fa-sign-in-alt"></i>
-                    <span>Login</span>
+                    <span><a href="register.html">Login</a></span>
                 </button>
 
                 <img src="/api/placeholder/40/40" alt="Profile" class="profile-img">
@@ -808,4 +808,19 @@
                 navbar.style.boxShadow = 'none';
             }
         });
-                </script>
+        
+        
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-auth.js";
+
+  const auth = getAuth();
+
+  onAuthStateChanged(auth, (user) => {
+    if (!user) {
+      // If no user is logged in, redirect to the login page
+      window.location.href = "register.html";
+    }
+  });
+
+
+
+    </script>
