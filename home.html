@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BookVerse - Discover Your Next Adventure</title>
+    <link type="module" href="home.js" >
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         /* [Previous navbar styles remain the same - I'll continue with new styles] */
@@ -804,7 +805,7 @@
         </section>
     </main>
                 <script>
-                    function togglehamburger() {
+                    function toggleSidebar() {
                         console.log("toggle is working")
                          document.getElementById('sidebar').classList.toggle('active');
                         document.getElementById('overlay').classList.toggle('active');
@@ -823,16 +824,7 @@
         });
         
         
-        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-auth.js";
-
-        const auth = getAuth();
-
-    onAuthStateChanged(auth, (user) => {
-     if (!user) {
-          // If no user is logged in, redirect to the login page
-         window.location.href = "register.html";
-        }
-      });
+        
         </script>
         </body>
     </html>
