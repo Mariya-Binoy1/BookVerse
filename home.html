@@ -148,8 +148,8 @@
             background: #ef4444;
             color: white;
             border-radius: 50%;
-            width: 20px;
-            height: 20px;
+            width: 15px;
+            height: 15px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -578,6 +578,15 @@
             gap: 2rem;
         }
 
+         a {
+            text-decoration: none;  /* Remove underline */
+            color: inherit;         /* Inherit the button's color */
+            /* display: block;         Make <a> behave like a block element */
+            /* width: 100%;            Ensure it fills the button */
+            /* height: 100%; */
+}
+
+
         .footer-section h3 {
             color: white;
             margin-bottom: 1.5rem;
@@ -632,7 +641,7 @@
             <div class="nav-center">
                 <a href="#" class="nav-link">
                     <i class="fas fa-home"></i>
-                    <span>Home</span>
+                    <span><a href="home.html">Home</a></span>
                 </a>
                 <a href="#" class="nav-link">
                     <i class="fas fa-star"></i>
@@ -654,13 +663,13 @@
 
             <div class="nav-right">
                 <div class="search-container">
-                    <i class="fas fa-search search-icon"></i>
+                    <!-- <i class="fas fa-search search-icon"></i> -->
                     <input type="text" class="search-input" placeholder="Search books...">
                 </div>
                 
                 <button class="notification-btn">
                     <i class="fas fa-bell"></i>
-                    <span class="notification-badge">3</span>
+                    <span class="notification-badge">1</span>
                 </button>
 
                 <button class="login-btn">
@@ -668,7 +677,7 @@
                     <span><a href="register.html">Login</a></span>
                 </button>
 
-                <img src="/api/placeholder/40/40" alt="Profile" class="profile-img">
+                <img src="" alt="Profile" class="profile-img">
             </div>
         </div>
     </nav>
@@ -729,7 +738,7 @@
             <div class="books-grid">
                 <!-- Book Card 1 -->
                 <div class="book-card">
-                    <img src="/api/placeholder/400/320" alt="Book 1" class="book-image">
+                    <img src="" alt="Book 1" class="book-image">
                     <div class="book-content">
                         <h3 class="book-title">The Midnight Library</h3>
                         <p class="book-author">Matt Haig</p>
@@ -791,11 +800,15 @@
                     <h3 class="suggestion-title">Based on Your Reading</h3>
                     <p class="suggestion-text">Discover new books based on your reading history and preferences.</p>
                 </div>
+            </div>
+        </section>
+    </main>
                 <script>
-                    function toggleSidebar() {
-            document.getElementById('sidebar').classList.toggle('active');
-            document.getElementById('overlay').classList.toggle('active');
-        }
+                    function togglehamburger() {
+                        console.log("toggle is working")
+                         document.getElementById('sidebar').classList.toggle('active');
+                        document.getElementById('overlay').classList.toggle('active');
+                        }
 
         // Change navbar background on scroll
         window.addEventListener('scroll', function() {
@@ -810,17 +823,16 @@
         });
         
         
-  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-auth.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-auth.js";
 
-  const auth = getAuth();
+        const auth = getAuth();
 
-  onAuthStateChanged(auth, (user) => {
-    if (!user) {
-      // If no user is logged in, redirect to the login page
-      window.location.href = "register.html";
-    }
-  });
-
-
-
-    </script>
+    onAuthStateChanged(auth, (user) => {
+     if (!user) {
+          // If no user is logged in, redirect to the login page
+         window.location.href = "register.html";
+        }
+      });
+        </script>
+        </body>
+    </html>

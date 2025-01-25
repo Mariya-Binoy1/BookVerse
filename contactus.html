@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us</title>
+    <style>
+        :root {
+            --primary: #4a90e2;
+            --secondary: #f39c12;
+            --background: #f5f7fa;
+            --text: #2c3e50;
+            --white: #ffffff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--background);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        .contact-container {
+            max-width: 900px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: var(--white);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            animation: fadeIn 1s ease;
+        }
+
+        .contact-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: var(--primary);
+        }
+
+        .contact-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .contact-card {
+            background: #f9f9f9;
+            padding: 1.5rem;
+            border-radius: 10px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .contact-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .contact-icon {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .contact-info {
+            font-weight: bold;
+            margin-top: 0.5rem;
+            color: var(--text);
+        }
+
+        .contact-detail {
+            display: none;
+            margin-top: 1rem;
+            background: #e9f5ff;
+            padding: 1rem;
+            border-radius: 8px;
+        }
+
+        .contact-form {
+            margin-top: 2rem;
+            background: #f1f4f8;
+            padding: 2rem;
+            border-radius: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #e0e0e0;
+            border-radius: 5px;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            color: var(--white);
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-3px);
+        }
+
+        .back-btn {
+            margin-top: 2rem;
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            background: var(--secondary);
+            color: var(--white);
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: #d98204;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 600px) {
+            .contact-container {
+                padding: 1rem;
+            }
+
+            .contact-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="contact-container">
+        <div class="contact-header">
+            <h1>Contact Admin</h1>
+        </div>
+
+        <div class="contact-grid">
+            <div class="contact-card" onclick="toggleDetail('phone-detail')">
+                <div class="contact-icon">📞</div>
+                <h3>Phone</h3>
+                <p class="contact-info">+91 8078241408</p>
+                <div class="contact-detail" id="phone-detail">
+                    <p>+91 9037250192</p>
+                    <p>+91 9895995138</p>
+                </div>
+            </div>
+
+            <div class="contact-card" onclick="toggleDetail('email-detail')">
+                <div class="contact-icon">✉️</div>
+                <h3>Email</h3>
+                <p class="contact-info">mariyabinoyv@gmail.com</p>
+                <div class="contact-detail" id="email-detail">
+                    <p>joannadaniel2026@cs.ajce.in</p>
+                    <p>lakshmysureshk@cs.ajce.in</p>
+                </div>
+            </div>
+
+            <div class="contact-card" onclick="toggleDetail('address-detail')">
+                <div class="contact-icon">📍</div>
+                <h3>Address</h3>
+                <p class="contact-info">Amal Jyothi college of engineering Kanjirappally</p>
+                <div class="contact-detail" id="address-detail">
+                    <p>Amal Jyothi college of engineering Kanjirappally</p>
+                    <p>Amal Jyothi college of engineering Kanjirappally</p>
+                </div>
+            </div>
+        </div>
+
+        <form class="contact-form" id="contact-form">
+            <div class="form-group">
+                <input type="text" class="form-control" placeholder="Your Name" required>
+            </div>
+            <div class="form-group">
+                <input type="email" class="form-control" placeholder="Your Email" required>
+            </div>
+            <div class="form-group">
+                <textarea class="form-control" placeholder="Your Message" rows="4" required></textarea>
+            </div>
+            <button type="submit" class="submit-btn">Send Message</button>
+        </form>
+
+        <button class="back-btn" onclick="redirectToHome()">Go Back to Homepage</button>
+    </div>
+
+    <script>
+        function toggleDetail(id) {
+            const detail = document.getElementById(id);
+            detail.style.display = detail.style.display === 'block' ? 'none' : 'block';
+        }
+
+        document.getElementById('contact-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Message sent successfully!');
+            this.reset();
+        });
+
+        function redirectToHome() {
+            if (confirm('Are you sure you want to go back to the homepage?')) {
+                window.location.href = 'home.html'; // Replace with your homepage URL
+            }
+        }
+    </script>
+</body>
+</html>

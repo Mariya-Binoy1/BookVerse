@@ -92,8 +92,6 @@ if (loginBtn) {
         // Access secure token (optional)
         const idToken = user.accessToken; // Secure token
         console.log("Secure Token:", idToken);
-
-        alert("Login successful!");
         window.location.href = "home.html"; // Redirect to home page after successful login
       })
       .catch((error) => {
