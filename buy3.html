@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BookVerse - Buy Books</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #6d28d9;
+            --primary-dark: #5b21b6;
+            --white: #ffffff;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-300: #d1d5db;
+            --navbar-height: 25vh;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+        }
+
+        /* Navbar Styles */
+        .navbar {
+            height: var(--navbar-height);
+            background: var(--white);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav-container {
+            margin: 0 auto;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 2rem;
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .nav-center {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            color: #333;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            transition: all 0.3s;
+        }
+
+        .nav-link:hover {
+            background-color: var(--gray-100);
+            transform: scale(1.05);
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            background: linear-gradient(45deg, #6d28d9, #2563eb);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-left: 1rem;
+        }
+
+        .login-btn {
+            background-color: var(--primary);
+            color: var(--white);
+            border: none;
+            padding: 0.5rem 1.5rem;
+            border-radius: 25px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s;
+        }
+
+        .login-btn:hover {
+            background-color: var(--primary-dark);
+            transform: scale(1.05);
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: -300px;
+            width: 300px;
+            height: 100%;
+            background-color: var(--white);
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+            transition: left 0.3s ease;
+            z-index: 1100;
+            padding-top: 60px;
+        }
+
+        .sidebar.active {
+            left: 0;
+        }
+
+        .sidebar-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1050;
+            display: none;
+        }
+
+        .sidebar-overlay.active {
+            display: block;
+        }
+
+        .sidebar-links {
+            list-style: none;
+            padding: 0;
+        }
+
+        .sidebar-links li {
+            padding: 1rem;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .sidebar-links a {
+            text-decoration: none;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .close-sidebar {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .hamburger {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            transition: background-color 0.3s;
+        }
+
+        .hamburger:hover {
+            background-color: var(--gray-100);
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            margin-top: var(--navbar-height);
+            min-height: calc(100vh - var(--navbar-height));
+            padding: 2rem;
+        }
+
+        .search-filter-section {
+            background: linear-gradient(135deg, #e9d5ff 0%, #ddd6fe 100%);
+            padding: 4rem 2rem;
+            text-align: center;
+        }
+
+        .search-filter-box {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .search-container {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .search-input {
+            flex-grow: 1;
+            padding: 0.75rem;
+            border: 2px solid var(--gray-300);
+            border-radius: 10px;
+            font-size: 1rem;
+        }
+
+        .filter-container {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .price-filter {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .price-input {
+            width: 100px;
+            padding: 0.5rem;
+            border: 2px solid var(--gray-300);
+            border-radius: 5px;
+        }
+
+        .search-btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .search-btn:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .featured-books-section {
+            padding: 4rem 2rem;
+            background: #f8f7ff;
+        }
+
+        .books-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .book-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
+        }
+
+        .book-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .book-image {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+        }
+
+        .book-content {
+            padding: 1.5rem;
+        }
+
+        .book-title {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .book-author {
+            color: #6b7280;
+            margin-bottom: 0.5rem;
+        }
+
+        .book-price {
+            font-size: 1.25rem;
+            color: var(--primary);
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .book-rating {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .star {
+            color: #fbbf24;
+        }
+
+        .review-count {
+            color: #6b7280;
+        }
+
+        .buy-btn {
+            width: 100%;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.75rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .buy-btn:hover {
+            background-color: var(--primary-dark);
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-left">
+                <button class="hamburger" onclick="toggleSidebar()">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="logo">BookVerse</div>
+            </div>
+
+            <div class="nav-center">
+                <a href="home.html" class="nav-link">
+                    <i class="fas fa-home"></i>
+                    <span>Home</span>
+                </a>
+                <a href="review.html" class="nav-link">
+                    <i class="fas fa-star"></i>
+                    <span>Review</span>
+                </a>
+                <a href="#" class="nav-link">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span>Resell</span>
+                </a>
+                <a href="#" class="nav-link">
+                    <i class="fas fa-book"></i>
+                    <span>Buy</span>
+                </a>
+                <a href="#" class="nav-link">
+                    <i class="fas fa-bookmark"></i>
+                    <span>My Books</span>
+                </a>
+            </div>
+
+            <div class="nav-right">
+                <button class="login-btn">
+                    <i class="fas fa-sign-in-alt"></i>
+                    <span>Login</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Sidebar -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+    <div class="sidebar" id="sidebar">
+        <button class="close-sidebar" onclick="toggleSidebar()">
+            <i class="fas fa-times"></i>
+        </button>
+        <ul class="sidebar-links">
+            <li>
+                <a href="home.html">
+                    <i class="fas fa-home"></i>
+                    Home
+                </a>
+            </li>
+            <li>
+                <a href="review.html">
+                    <i class="fas fa-star"></i>
+                    Review
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                    <i class="fas fa-shopping-cart"></i>
+                    Resell
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                    <i class="fas fa-book"></i>
+                    Buy
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                    <i class="fas fa-bookmark"></i>
+                    My Books
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                    <i class="fas fa-sign-in-alt"></i>
+                    Login
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <main class="main-content">
+        <section class="search-filter-section">
+            <div class="search-filter-box">
+                <h2 style="margin-bottom: 1.5rem;">Find Your Next Book</h2>
+                <div class="search-container">
+                    <input type="text" class="search-input" placeholder="Search by title, author, or genre">
+                    <button class="search-btn">Search</button>
+                </div>
+                <div class="filter-container">
+                    <div class="price-filter">
+                        <span>Price Range (₹):</span>
+                        <input type="number" class="price-input" placeholder="Min" min="0">
+                        <span>to</span>
+                        <input type="number" class="price-input" placeholder="Max" min="0">
+                    </div>
+                    <button class="search-btn">Apply Filters</button>
+                </div>
+            </div>
+        </section>
+
+        <section class="featured-books-section">
+            <h2 style="text-align: center; margin-bottom: 2rem; color: var(--primary-dark);">Top Rated Books</h2>
+            <div class="books-grid">
+                <div class="book-card">
+                    <img src="/api/placeholder/400/320" alt="Book Cover" class="book-image">
+                    <div class="book-content">
+                        <h3 class="book-title">The Midnight Library</h3>
+                        <p class="book-author">Matt Haig</p>
+                        <p class="book-price">₹499</p>
+                        <div class="book-rating">
+                            <i class="fas fa-star star"></i>
+                            <i class="fas fa-star star"></i>
+                            <i class="fas fa-star star"></i>
+                            <i class="fas fa-star star"></i>
+                            <i class="fas fa-star-half-alt star"></i>
+                            <span class="review-count">(245 Reviews)</span>
+                        </div>
+                        <button class="buy-btn">Add to Cart</button>
+                    </div>
+                </div>
+
+                <div class="book-card">
+                    <img src="/api/placeholder/400/320" alt="Book Cover" class="book-image">
+                    <div class="book-content">
+                        <h3 class="book-title">Project Hail Mary</h3>
+                        <p class="book-author">Andy Weir</p>
+                        <p class="book-price">₹599</p>
+                        <div class="book-rating">
+                            <i class="fas fa-star star"></i>
+                            <i class="fas fa-star star"></i>
+                            <i class="fas fa-star star"></i>
+                            <i class="fas fa-star star"></i>
+                            <i class="fas fa-star star"></i>
+                            <span class="review-count">(320 Reviews)</span>
+                        </div>
+                        <button class="buy-btn">Add to Cart</button>
+                    </div>
+                </div>
+
+                <div class="book-card">
+                    <img src="/api/placeholder/400/320" alt="Book Cover" class="book-image">
+                    <div class="book-content">
+                        <h3 class="book-title">Klara and the Sun</h3>
+                        <p class="book-author">Kazuo Ishiguro</p>
+                        <p class="book-price">₹449</p>
+                        <div class="book-rating">
+                            <i class="fas fa-star star"></i>
+                            <i class="fas fa-star star"></i>
+                            <i class="fas fa-star star"></i>
+                            <i class="fas fa-star star"></i>
+                            <i class="far fa-star star"></i>
+                            <span class="review-count">(189 Reviews)</span>
+                        </div>
+                        <button class="buy-btn">Add to Cart</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // Toggle Sidebar Function
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const sidebarOverlay = document.getElementById('sidebarOverlay');
+            
+            sidebar.classList.toggle('active');
+            sidebarOverlay.classList.toggle('active');
+        }
+
+        // Close sidebar when clicking outside
+        document.getElementById('sidebarOverlay').addEventListener('click', toggleSidebar);
+
+        // Change navbar background on scroll
+        window.addEventListener('scroll', function() {
+            const navbar = document.querySelector('.navbar');
+            if (window.scrollY > 20) {
+                navbar.style.backgroundColor = '#ffffff';
+                navbar.style.boxShadow = '0 2px 10px rgba(0, 0, 0, 0.1)';
+            } else {
+                navbar.style.backgroundColor = 'transparent';
+                navbar.style.boxShadow = 'none';
+            }
+        });
+
+        // Price filter validation
+        const minPrice = document.querySelector('input[placeholder="Min"]');
+        const maxPrice = document.querySelector('input[placeholder="Max"]');
+
+        minPrice.addEventListener('change', () => {
+            if (parseInt(minPrice.value) < 0) minPrice.value = 0;
+            if (maxPrice.value && parseInt(minPrice.value) > parseInt(maxPrice.value)) {
+                minPrice.value = maxPrice.value;
+            }
+        });
+
+        maxPrice.addEventListener('change', () => {
+            if (parseInt(maxPrice.value) < 0) maxPrice.value = 0;
+            if (minPrice.value && parseInt(maxPrice.value) < parseInt(minPrice.value)) {
+                maxPrice.value = minPrice.value;
+            }
+        });
+    </script>
+</body>
+</html>
