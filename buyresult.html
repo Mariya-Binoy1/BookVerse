@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BookVerse - Search Results</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #6d28d9;
+            --primary-dark: #5b21b6;
+            --white: #ffffff;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-300: #d1d5db;
+            --navbar-height: 25vh;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+        }
+
+        /* Navbar Styles */
+        .navbar {
+            height: var(--navbar-height);
+            background: var(--white);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav-container {
+            margin: 0 auto;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            padding: 1rem 2rem;
+        }
+
+        .nav-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .nav-center {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-search {
+            width: 100%;
+            padding: 0.5rem 1rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .search-container {
+            display: flex;
+            gap: 1rem;
+            width: 100%;
+            max-width: 600px;
+        }
+
+        .search-input {
+            flex-grow: 1;
+            padding: 0.75rem;
+            border: 2px solid var(--gray-300);
+            border-radius: 10px;
+            font-size: 1rem;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            color: #333;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            transition: all 0.3s;
+        }
+
+        .nav-link:hover {
+            background-color: var(--gray-100);
+            transform: scale(1.05);
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            background: linear-gradient(45deg, #6d28d9, #2563eb);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-left: 1rem;
+        }
+
+        .login-btn {
+            background-color: var(--primary);
+            color: var(--white);
+            border: none;
+            padding: 0.5rem 1.5rem;
+            border-radius: 25px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s;
+        }
+
+        .login-btn:hover {
+            background-color: var(--primary-dark);
+            transform: scale(1.05);
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: -300px;
+            width: 300px;
+            height: 100%;
+            background-color: var(--white);
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+            transition: left 0.3s ease;
+            z-index: 1100;
+            padding-top: 60px;
+        }
+
+        .sidebar.active {
+            left: 0;
+        }
+
+        .sidebar-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1050;
+            display: none;
+        }
+
+        .sidebar-overlay.active {
+            display: block;
+        }
+
+        .sidebar-links {
+            list-style: none;
+            padding: 0;
+        }
+
+        .sidebar-links li {
+            padding: 1rem;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .sidebar-links a {
+            text-decoration: none;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .close-sidebar {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .hamburger {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            transition: background-color 0.3s;
+        }
+
+        .hamburger:hover {
+            background-color: var(--gray-100);
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            margin-top: var(--navbar-height);
+            min-height: calc(100vh - var(--navbar-height));
+            padding: 2rem;
+            background: #f8f7ff;
+        }
+
+        .results-layout {
+            display: flex;
+            gap: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Filter Sidebar */
+        .filter-sidebar {
+            width: 280px;
+            background: white;
+            padding: 1.5rem;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            height: fit-content;
+            position: sticky;
+            top: calc(var(--navbar-height) + 2rem);
+        }
+
+        .filter-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .filter-section h3 {
+            color: var(--primary-dark);
+            margin-bottom: 1rem;
+        }
+
+        .filter-option {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Results Section */
+        .results-section {
+            flex-grow: 1;
+        }
+
+        .results-header {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .results-count {
+            font-size: 1.1rem;
+            color: var(--primary-dark);
+        }
+
+        .sort-dropdown {
+            padding: 0.5rem 1rem;
+            border: 2px solid var(--gray-300);
+            border-radius: 8px;
+            background: white;
+            cursor: pointer;
+        }
+
+        .books-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .book-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
+        }
+
+        .book-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .book-image {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+        }
+
+        .book-content {
+            padding: 1.5rem;
+        }
+
+        .book-title {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .book-author {
+            color: #6b7280;
+            margin-bottom: 0.5rem;
+        }
+
+        .book-price {
+            font-size: 1.25rem;
+            color: var(--primary);
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .book-condition {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            background: var(--gray-100);
+            border-radius: 15px;
+            font-size: 0.9rem;
+            color: #4b5563;
+            margin-bottom: 0.5rem;
+        }
+
+        .book-rating {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .star {
+            color: #fbbf24;
+        }
+
+        .review-count {
+            color: #6b7280;
+        }
+
+        .buy-btn {
+            width: 100%;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.75rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .buy-btn:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .apply-filters-btn {
+            width: 100%;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.75rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-top: 1rem;
+        }
+
+        .apply-filters-btn:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .search-btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .search-btn:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .price-input {
+            width: 100%;
+            padding: 0.5rem;
+            border: 2px solid var(--gray-300);
+            border-radius: 5px;
+            margin-bottom: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-top">
+                <div class="nav-left">
+                    <button class="hamburger" onclick="toggleSidebar()">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <div class="logo">BookVerse</div>
+                </div>
+
+                <div class="nav-center">
+                    <a href="home.html" class="nav-link">
+                        <i class="fas fa-home"></i>
+                        <span>Home</span>
+                    </a>
+                    <a href="review.html" class="nav-link">
+                        <i class="fas fa-star"></i>
+                        <span>Review</span>
+                    </a>
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span>Resell</span>
+                    </a>
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-book"></i>
+                        <span>Buy</span>
+                    </a>
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-bookmark"></i>
+                        <span>My Books</span>
+                    </a>
+                </div>
+
+                <div class="nav-right">
+                    <button class="login-btn">
+                        <i class="fas fa-sign-in-alt"></i>
+                        <span>Login</span>
+                    </button>
+                </div>
+            </div>
+            <div class="nav-search">
+                <div class="search-container">
+                    <input type="text" class="search-input" placeholder="Search by title, author, or genre">
+                    <button class="search-btn">Search</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Sidebar -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+    <div class="sidebar" id="sidebar">
+        <button class="close-sidebar" onclick="toggleSidebar()">
+            <i class="fas fa-times"></i>
+        </button>
+        <ul class="sidebar-links">
+            <li><a href="home.html"><i class="fas fa-home"></i>Home</a></li>
+            <li><a href="review.html"><i class="fas fa-star"></i>Review</a></li>
+            <li><a href="#"><i class="fas fa-shopping-cart"></i>Resell</a></li>
+            <li><a href="#"><i class="fas fa-book"></i>Buy</a></li>
+            <li><a href="#"><i class="fas fa-bookmark"></i>My Books</a></li>
+            <li><a href="#"><i class="fas fa-sign-in-alt"></i>Login</a></li>
+        </ul>
+    </div>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="results-layout">
+            <!-- Filter Sidebar -->
+            <aside class="filter-sidebar">
+                <div class="filter-section">
+                    <h3>Genre</h3>
+                    <div class="filter-option">
+                        <input type="checkbox" id="fiction">
+                        <label for="fiction">Fiction</label>
+                    </div>
+                    <div class="filter-option">
+                        <input type="checkbox" id="nonfiction">
+                        <label for="nonfiction">Non-Fiction</label>
+                    </div>
+                    <div class="filter-option">
+                        <input type="checkbox" id="mystery">
+                        <label for="mystery">Mystery</label>
+                    </div>
+                    <div class="filter-option">
+                        <input type="checkbox" id="scifi">
+                        <label for="scifi">Sci-Fi</label>
+                    </div>
+                </div>
+
+                <div class="filter-section">
+                    <h3>Price Range</h3>
+                    <div class="price-range">
+                        <input type="number" class="price-input" placeholder="Min Price" min="0">
+                        <input type="number" class="price-input" placeholder="Max Price" min="0">
+                    </div>
+                </div>
+
+                <div class="filter-section">
+                    <h3>Rating</h3>
+                    <div class="filter-option">
+                        <input type="checkbox" id="4star">
+                        <label for="4star">4★ & above</label>
+                    </div>
+                    <div class="filter-option">
+                        <input type="checkbox" id="3star">
+                        <label for="3star">3★ & above</label>
+                    </div>
+                </div>
+
+                <div class="filter-section">
+                    <h3>Book Condition</h3>
+                    <div class="filter-option">
+                        <input type="checkbox" id="like-new">
+                        <label for="like-new">Like New</label>
+                    </div>
+                    <div class="filter-option">
+                        <input type="checkbox" id="good">
+                        <label for="good">Good</label>
+                    </div>
+                    <div class="filter-option">
+                        <input type="checkbox" id="fair">
+                        <label for="fair">Fair</label>
+                    </div>
+                </div>
+
+                <button class="apply-filters-btn">Apply Filters</button>
+            </aside>
+
+            <!-- Results Section -->
+            <section class="results-section">
+                <div class="results-header">
+                    <div class="results-count"> books found</div>
+                    <select class="sort-dropdown">
+                        <option value="relevance">Sort by Relevance</option>
+                        <option value="price-low">Price: Low to High</option>
+                        <option value="price-high">Price: High to Low</option>
+                        <option value="rating">Highest Rated</option>
+                    </select>
+                </div>
+
+                <div class="books-grid">
+                    <!-- Book Card 1 -->
+                    <div class="book-card">
+                        <img src="/api/placeholder/400/320" alt="Book Cover" class="book-image">
+                        <div class="book-content">
+                            <h3 class="book-title">The Silent Patient</h3>
+                            <p class="book-author">Alex Michaelides</p>
+                            <span class="book-condition">Like New</span>
+                            <p class="book-price">₹299</p>
+                            <div class="book-rating">
+                                <i class="fas fa-star star"></i>
+                                <i class="fas fa-star star"></i>
+                                <i class="fas fa-star star"></i>
+                                <i class="fas fa-star star"></i>
+                                <i class="fas fa-star-half-alt star"></i>
+                                <span class="review-count">(128 Reviews)</span>
+                            </div>
+                            <button class="buy-btn">Add to Cart</button>
+                        </div>
+                    </div>
+
+                    <!-- Book Card 2 -->
+                    <div class="book-card">
+                        <img src="/api/placeholder/400/320" alt="Book Cover" class="book-image">
+                        <div class="book-content">
+                            <h3 class="book-title">Dune</h3>
+                            <p class="book-author">Frank Herbert</p>
+                            <span class="book-condition">Good</span>
+                            <p class="book-price">₹399</p>
+                            <div class="book-rating">
+                                <i class="fas fa-star star"></i>
+                                <i class="fas fa-star star"></i>
+                                <i class="fas fa-star star"></i>
+                                <i class="fas fa-star star"></i>
+                                <i class="fas fa-star star"></i>
+                                <span class="review-count">(256 Reviews)</span>
+                            </div>
+                            <button class="buy-btn">Add to Cart</button>
+                        </div>
+                    </div>
+
+                    <!-- More book cards can be added here -->
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script>
+        // Toggle Sidebar Function
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const sidebarOverlay = document.getElementById('sidebarOverlay');
+            
+            sidebar.classList.toggle('active');
+            sidebarOverlay.classList.toggle('active');
+        }
+
+        // Close sidebar when clicking outside
+        document.getElementById('sidebarOverlay').addEventListener('click', toggleSidebar);
+
+        // Price filter validation
+        const minPrice = document.querySelector('input[placeholder="Min Price"]');
+        const maxPrice = document.querySelector('input[placeholder="Max Price"]');
+
+        minPrice.addEventListener('change', () => {
+            if (parseInt(minPrice.value) < 0) minPrice.value = 0;
+            if (maxPrice.value && parseInt(minPrice.value) > parseInt(maxPrice.value)) {
+                minPrice.value = maxPrice.value;
+            }
+        });
+
+        maxPrice.addEventListener('change', () => {
+            if (parseInt(maxPrice.value) < 0) maxPrice.value = 0;
+            if (minPrice.value && parseInt(maxPrice.value) < parseInt(minPrice.value)) {
+                maxPrice.value = minPrice.value;
+            }
+        });
+
+        // Sort dropdown functionality
+        document.querySelector('.sort-dropdown').addEventListener('change', function(e) {
+            // Add sorting logic here
+            console.log('Sorting by:', e.target.value);
+        });
+
+        // Filter application
+        document.querySelector('.apply-filters-btn').addEventListener('click', function() {
+            // Add filter application logic here
+            console.log('Applying filters');
+        });
+
+        // Search functionality
+        document.querySelector('.search-btn').addEventListener('click', function() {
+            const searchQuery = document.querySelector('.search-input').value;
+            // Add search logic here
+            console.log('Searching for:', searchQuery);
+        });
+    </script>
+</body>
+</html>
