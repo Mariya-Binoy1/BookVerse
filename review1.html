@@ -234,66 +234,67 @@
             color: #6b7280;
         }
 
+        
         /* Sidebar Styles */
         .sidebar {
             position: fixed;
-            top: 0;
+            top: var(--navbar-height);
             left: -300px;
             width: 300px;
-            height: 100%;
-            background-color: var(--white);
-            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+            height: calc(100vh - var(--navbar-height));
+            background: var(--white);
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
             transition: left 0.3s ease;
-            z-index: 1100;
-            padding-top: 60px;
+            z-index: 999;
         }
 
         .sidebar.active {
             left: 0;
         }
 
-        .sidebar-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.5);
-            z-index: 1050;
-            display: none;
-        }
-
-        .sidebar-overlay.active {
-            display: block;
-        }
-
-        .sidebar-links {
-            list-style: none;
-            padding: 0;
-        }
-
-        .sidebar-links li {
-            padding: 1rem;
-            border-bottom: 1px solid var(--gray-200);
-        }
-
-        .sidebar-links a {
-            text-decoration: none;
-            color: #333;
+        .sidebar-link {
             display: flex;
             align-items: center;
             gap: 1rem;
+            padding: 1rem 2rem;
+            text-decoration: none;
+            color: #333;
+            transition: background-color 0.3s;
         }
 
-        .close-sidebar {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            cursor: pointer;
+        .overlay {
+            position: fixed;
+            top: var(--navbar-height);
+            left: 0;
+            width: 100%;
+            height: calc(100vh - var(--navbar-height));
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            z-index: 998;
         }
+
+        .overlay.active {
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            .nav-center {
+                display: none;
+            }
+
+            .search-container {
+                display: none;
+            }
+
+            .nav-container {
+                padding: 0 1rem;
+            }
+
+            .resell-container {
+                padding: 1rem;
+            }
+        }
+        
     </style>
 </head>
 <body>
@@ -338,51 +339,34 @@
         </div>
     </nav>
 
-    <!-- Sidebar -->
-    <div class="sidebar-overlay" id="sidebarOverlay"></div>
     <div class="sidebar" id="sidebar">
-        <button class="close-sidebar" onclick="toggleSidebar()">
-            <i class="fas fa-times"></i>
-        </button>
-        <ul class="sidebar-links">
-            <li>
-                <a href="home.html">
-                    <i class="fas fa-home"></i>
-                    Home
-                </a>
-            </li>
-            <li>
-                <a href="review.html">
-                    <i class="fas fa-star"></i>
-                    Review
-                </a>
-            </li>
-            <li>
-                <a href="#">
-                    <i class="fas fa-shopping-cart"></i>
-                    Resell
-                </a>
-            </li>
-            <li>
-                <a href="#">
-                    <i class="fas fa-book"></i>
-                    Buy
-                </a>
-            </li>
-            <li>
-                <a href="#">
-                    <i class="fas fa-bookmark"></i>
-                    My Books
-                </a>
-            </li>
-            <li>
-                <a href="#">
-                    <i class="fas fa-sign-in-alt"></i>
-                    Login
-                </a>
-            </li>
-        </ul>
+        <a href="#" class="sidebar-link">
+            <i class="fas fa-star"></i>
+            <span>Most Reviewed Books</span>
+        </a>
+        <a href="#" class="sidebar-link">
+            <i class="fas fa-lightbulb"></i>
+            <span>Suggestions</span>
+        </a>
+        <a href="#" class="sidebar-link">
+            <i class="fas fa-bookmark"></i>
+            <span>My Saved Books</span>
+        </a>
+        <a href="#" class="sidebar-link">
+            <i class="fas fa-user"></i>
+            <span>My Profile</span>
+        </a>
+        <a href="#" class="sidebar-link">
+            <i class="fas fa-cog"></i>
+            <span>Settings</span>
+        </a>
+        <a href="#" class="sidebar-link">
+            <i class="fas fa-sign-out-alt"></i>
+            <span>Logout</span>
+        </a>
     </div>
+
+    <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
 
     <main class="main-content">
         <section class="review-search-section">
